@@ -6,17 +6,18 @@ Push (DB → EduPage): homework submissions (where API supports it)
 """
 
 import logging
-from datetime import date
+from datetime import date, datetime
 from typing import Any
 
 from django.conf import settings
-from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
 
 class EdupageSyncService:
-    def __init__(self, server: str = "", username: str = "", password: str = "") -> None:
+    def __init__(
+        self, server: str = "", username: str = "", password: str = ""
+    ) -> None:
         self.server = server or settings.EDUPAGE_SERVER
         self.username = username or settings.EDUPAGE_USERNAME
         self.password = password or settings.EDUPAGE_PASSWORD
@@ -25,7 +26,7 @@ class EdupageSyncService:
     def _get_client(self) -> Any:
         if self._edupage is None:
             try:
-                from edupage_api import Edupage  # type: ignore[import-untyped]
+                from edupage_api import Edupage
 
                 ep = Edupage()
                 ep.login(self.username, self.password, self.server)
@@ -68,8 +69,7 @@ class EdupageSyncService:
         return results
 
     def sync_timetable(self) -> dict[str, int]:
-        from apps.timetable.models import Subject, TimetableEntry, Period
-        from apps.accounts.models import SchoolClass
+        from apps.timetable.models import Subject
 
         ep = self._get_client()
         created = updated = 0
@@ -96,7 +96,12 @@ class EdupageSyncService:
         return {"created": created, "updated": updated}
 
     def sync_users(self) -> dict[str, int]:
-        from apps.accounts.models import User, UserRole, StudentProfile, TeacherProfile, SchoolClass
+        from apps.accounts.models import (
+            StudentProfile,
+            TeacherProfile,
+            User,
+            UserRole,
+        )
 
         ep = self._get_client()
         created = updated = 0
@@ -162,8 +167,8 @@ class EdupageSyncService:
         return {"created": created, "updated": updated}
 
     def sync_grades(self) -> dict[str, int]:
-        from apps.assignments.models import Grade
         from apps.accounts.models import User
+        from apps.assignments.models import Grade
         from apps.timetable.models import Subject
 
         ep = self._get_client()
@@ -209,10 +214,11 @@ class EdupageSyncService:
         return {"created": created}
 
     def sync_homework(self) -> dict[str, int]:
-        from apps.assignments.models import Assignment
-        from apps.accounts.models import User, SchoolClass
-        from apps.timetable.models import Subject
         from django.utils import timezone as tz
+
+        from apps.accounts.models import SchoolClass, User
+        from apps.assignments.models import Assignment
+        from apps.timetable.models import Subject
 
         ep = self._get_client()
         created = 0
@@ -220,13 +226,21 @@ class EdupageSyncService:
         try:
             # 0.12.x: get_homework(date_from, date_to)
             from datetime import timedelta
-            homework_data = ep.get_homework(date.today(), date.today() + timedelta(days=30)) or []
+
+            homework_data = (
+                ep.get_homework(date.today(), date.today() + timedelta(days=30)) or []
+            )
         except Exception:
             homework_data = []
 
         for hw in homework_data:
-            edupage_id = str(getattr(hw, "homework_id", "") or getattr(hw, "id", "") or "")
-            if not edupage_id or Assignment.objects.filter(edupage_id=edupage_id).exists():
+            edupage_id = str(
+                getattr(hw, "homework_id", "") or getattr(hw, "id", "") or ""
+            )
+            if (
+                not edupage_id
+                or Assignment.objects.filter(edupage_id=edupage_id).exists()
+            ):
                 continue
 
             subject_obj = getattr(hw, "subject", None)
@@ -239,6 +253,7 @@ class EdupageSyncService:
             )
 
             teacher_ep_id = str(getattr(hw, "teacher_id", "") or "")
+            teacher: User | None
             try:
                 teacher = User.objects.get(edupage_id=teacher_ep_id)
             except User.DoesNotExist:
@@ -252,15 +267,19 @@ class EdupageSyncService:
 
             due = getattr(hw, "due_date", None) or date.today()
             Assignment.objects.create(
-                title=str(getattr(hw, "title", "") or getattr(hw, "description", "") or "Homework"),
-                description=str(getattr(hw, "description", "") or getattr(hw, "text", "") or ""),
+                title=str(
+                    getattr(hw, "title", "")
+                    or getattr(hw, "description", "")
+                    or "Homework"
+                ),
+                description=str(
+                    getattr(hw, "description", "") or getattr(hw, "text", "") or ""
+                ),
                 assignment_type="homework",
                 subject=subject,
                 school_class=school_class,
                 assigned_by=teacher,
-                due_date=tz.make_aware(
-                    timezone.datetime.combine(due, timezone.datetime.min.time())
-                ),
+                due_date=tz.make_aware(datetime.combine(due, datetime.min.time())),
                 edupage_id=edupage_id,
             )
             created += 1
@@ -276,7 +295,9 @@ class EdupageSyncService:
         from apps.assignments.models import Submission
 
         try:
-            submission = Submission.objects.select_related("assignment").get(pk=submission_id)
+            submission = Submission.objects.select_related("assignment").get(
+                pk=submission_id
+            )
             if not submission.assignment.edupage_id:
                 return False
 

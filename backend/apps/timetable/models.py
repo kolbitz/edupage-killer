@@ -46,7 +46,9 @@ class DayOfWeek(models.IntegerChoices):
 
 
 class TimetableEntry(models.Model):
-    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name="timetable_entries")
+    subject = models.ForeignKey(
+        Subject, on_delete=models.CASCADE, related_name="timetable_entries"
+    )
     teacher = models.ForeignKey(
         "accounts.User",
         on_delete=models.SET_NULL,
@@ -56,7 +58,9 @@ class TimetableEntry(models.Model):
         related_name="teaching_entries",
     )
     school_class = models.ForeignKey(
-        "accounts.SchoolClass", on_delete=models.CASCADE, related_name="timetable_entries"
+        "accounts.SchoolClass",
+        on_delete=models.CASCADE,
+        related_name="timetable_entries",
     )
     room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True, blank=True)
     period = models.ForeignKey(Period, on_delete=models.CASCADE)
@@ -82,7 +86,11 @@ class SubstitutionEntry(models.Model):
 
     date = models.DateField()
     original_entry = models.ForeignKey(
-        TimetableEntry, on_delete=models.CASCADE, related_name="substitutions", null=True, blank=True
+        TimetableEntry,
+        on_delete=models.CASCADE,
+        related_name="substitutions",
+        null=True,
+        blank=True,
     )
     substitute_teacher = models.ForeignKey(
         "accounts.User",
@@ -91,7 +99,9 @@ class SubstitutionEntry(models.Model):
         blank=True,
         related_name="substitutions",
     )
-    subject = models.ForeignKey(Subject, on_delete=models.SET_NULL, null=True, blank=True)
+    subject = models.ForeignKey(
+        Subject, on_delete=models.SET_NULL, null=True, blank=True
+    )
     room = models.ForeignKey(Room, on_delete=models.SET_NULL, null=True, blank=True)
     period = models.ForeignKey(Period, on_delete=models.SET_NULL, null=True, blank=True)
     school_class = models.ForeignKey(

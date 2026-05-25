@@ -3,11 +3,8 @@ import { useQuery } from "@tanstack/react-query";
 import { useAuthStore } from "@/store/auth";
 import { getMyTimetable } from "@/api/timetable";
 import { getAssignments } from "@/api/assignments";
-import { getMyAttendance } from "@/api/attendance";
 import { Calendar, BookOpen, UserCheck, TrendingUp } from "lucide-react";
 import { format } from "date-fns";
-
-const DAY_NAMES = ["", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
 export default function DashboardPage() {
   const user = useAuthStore((s) => s.user);
@@ -24,23 +21,38 @@ export default function DashboardPage() {
   });
 
   const todayEntries = timetable?.filter((e) => e.day === today) ?? [];
-  const upcomingAssignments = assignments
-    ?.filter((a) => !a.is_overdue)
-    .slice(0, 5) ?? [];
+  const upcomingAssignments = assignments?.filter((a) => !a.is_overdue).slice(0, 5) ?? [];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold">Good {getGreeting()}, {user?.full_name?.split(" ")[0]}</h1>
+        <h1 className="text-2xl font-bold">
+          Good {getGreeting()}, {user?.full_name?.split(" ")[0]}
+        </h1>
         <p className="text-gray-500">{format(new Date(), "EEEE, MMMM d, yyyy")}</p>
       </div>
 
       {/* Stats row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard icon={Calendar} label="Today's lessons" value={String(todayEntries.length)} color="blue" />
-        <StatCard icon={BookOpen} label="Pending work" value={String(upcomingAssignments.length)} color="orange" />
+        <StatCard
+          icon={Calendar}
+          label="Today's lessons"
+          value={String(todayEntries.length)}
+          color="blue"
+        />
+        <StatCard
+          icon={BookOpen}
+          label="Pending work"
+          value={String(upcomingAssignments.length)}
+          color="orange"
+        />
         <StatCard icon={UserCheck} label="Role" value={user?.role ?? "-"} color="green" />
-        <StatCard icon={TrendingUp} label="This week" value={`${timetable?.length ?? 0} lessons`} color="purple" />
+        <StatCard
+          icon={TrendingUp}
+          label="This week"
+          value={`${timetable?.length ?? 0} lessons`}
+          color="purple"
+        />
       </div>
 
       <div className="grid lg:grid-cols-2 gap-6">
@@ -55,10 +67,7 @@ export default function DashboardPage() {
           ) : (
             <div className="space-y-2">
               {todayEntries.map((entry) => (
-                <div
-                  key={entry.id}
-                  className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg"
-                >
+                <div key={entry.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
                   <div
                     className="w-3 h-3 rounded-full flex-shrink-0"
                     style={{ backgroundColor: entry.subject.color }}
@@ -94,11 +103,13 @@ export default function DashboardPage() {
                       <p className="text-sm font-medium">{a.title}</p>
                       <p className="text-xs text-gray-500">{a.subject_name}</p>
                     </div>
-                    <span className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${
-                      a.assignment_type === "exam"
-                        ? "bg-red-100 text-red-700"
-                        : "bg-blue-100 text-blue-700"
-                    }`}>
+                    <span
+                      className={`text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${
+                        a.assignment_type === "exam"
+                          ? "bg-red-100 text-red-700"
+                          : "bg-blue-100 text-blue-700"
+                      }`}
+                    >
                       {a.assignment_type}
                     </span>
                   </div>
@@ -123,8 +134,16 @@ function getGreeting() {
 }
 
 function StatCard({
-  icon: Icon, label, value, color,
-}: { icon: React.ElementType; label: string; value: string; color: string }) {
+  icon: Icon,
+  label,
+  value,
+  color,
+}: {
+  icon: React.ElementType;
+  label: string;
+  value: string;
+  color: string;
+}) {
   const colors: Record<string, string> = {
     blue: "bg-blue-50 text-blue-600",
     orange: "bg-orange-50 text-orange-600",

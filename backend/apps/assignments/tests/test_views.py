@@ -43,7 +43,9 @@ def student(db: None, school_class: SchoolClass) -> User:
 
 
 @pytest.fixture
-def assignment(db: None, school_class: SchoolClass, subject: Subject, teacher: User) -> Assignment:
+def assignment(
+    db: None, school_class: SchoolClass, subject: Subject, teacher: User
+) -> Assignment:
     return Assignment.objects.create(
         title="Test Homework",
         assignment_type="homework",
@@ -62,7 +64,7 @@ class TestAssignmentListView:
         client.force_authenticate(user=student)
         response = client.get("/api/assignments/")
         assert response.status_code == 200
-        assert any(a["title"] == "Test Homework" for a in response.data)
+        assert any(a["title"] == "Test Homework" for a in response.data["results"])
 
     def test_teacher_sees_own_assignments(
         self, client: APIClient, teacher: User, assignment: Assignment
@@ -70,7 +72,7 @@ class TestAssignmentListView:
         client.force_authenticate(user=teacher)
         response = client.get("/api/assignments/")
         assert response.status_code == 200
-        assert any(a["title"] == "Test Homework" for a in response.data)
+        assert any(a["title"] == "Test Homework" for a in response.data["results"])
 
     def test_unauthenticated_returns_401(self, client: APIClient) -> None:
         response = client.get("/api/assignments/")
@@ -91,4 +93,4 @@ class TestAssignmentListView:
         client.force_authenticate(user=other_student)
         response = client.get("/api/assignments/")
         assert response.status_code == 200
-        assert not any(a["title"] == "Test Homework" for a in response.data)
+        assert not any(a["title"] == "Test Homework" for a in response.data["results"])

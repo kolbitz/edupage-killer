@@ -799,6 +799,7 @@ dependencies = [
     { name = "python-decouple" },
     { name = "redis" },
     { name = "strawberry-graphql", extra = ["django"] },
+    { name = "strawberry-graphql-django" },
 ]
 
 [package.dev-dependencies]
@@ -835,6 +836,7 @@ requires-dist = [
     { name = "python-decouple", specifier = ">=3.8" },
     { name = "redis", specifier = ">=5.1" },
     { name = "strawberry-graphql", extras = ["django"], specifier = ">=0.235" },
+    { name = "strawberry-graphql-django", specifier = ">=0.50" },
 ]
 
 [package.metadata.requires-dev]
@@ -1581,6 +1583,20 @@ wheels = [
 django = [
     { name = "asgiref" },
     { name = "django" },
+]
+
+[[package]]
+name = "strawberry-graphql-django"
+version = "0.86.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asgiref" },
+    { name = "django" },
+    { name = "strawberry-graphql" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/97/7b/d69f31702e8b33f4af0da95aa9d27b070711f40e5f49584b0ef643aa8be5/strawberry_graphql_django-0.86.0.tar.gz", hash = "sha256:380326ab2f9a9bf79a66ca7fad8a1c2fe72760f3608d3b39b617213c8b3f3329", size = 92535, upload-time = "2026-05-23T10:56:44.458Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/17/d6/a5d530989e79bd45606305b58004cb523622f8172e24e9466f93f0523b75/strawberry_graphql_django-0.86.0-py3-none-any.whl", hash = "sha256:5d5771fd6227d48aa9d94e72e9d7ab5a995e64bd970f2d17123563869b4b02cc", size = 116481, upload-time = "2026-05-23T10:56:43.314Z" },
 ]
 
 [[package]]

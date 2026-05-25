@@ -1,6 +1,7 @@
 import strawberry
 import strawberry.django as strawberry_django
 from strawberry import auto
+
 from .models import Channel, Message
 
 

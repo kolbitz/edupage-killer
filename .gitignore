@@ -40,6 +40,7 @@ frontend/.vite/
 *.tsbuildinfo
 # pnpm
 pnpm-debug.log
+frontend/test-results
 
 # IDE
 .vscode/

@@ -1,4 +1,4 @@
-.PHONY: help install dev stop logs migrate makemigrations createsuperuser shell lint format typecheck test build clean sync-edupage
+.PHONY: help install dev stop logs migrate makemigrations createsuperuser shell lint lint-fix format typecheck test test-e2e build clean sync-edupage
 
 BACKEND_DIR := backend
 FRONTEND_DIR := frontend
@@ -14,10 +14,12 @@ help:
 	@echo "  makemigrations    Create Django migrations"
 	@echo "  createsuperuser   Create Django admin user"
 	@echo "  shell             Open Django shell"
-	@echo "  lint              Run ruff + eslint"
-	@echo "  format            Run black + prettier"
+	@echo "  lint              Run ruff + black --check + eslint"
+	@echo "  lint-fix          Run ruff + black + eslint with auto-fix"
+	@echo "  format            Run black + biome"
 	@echo "  typecheck         Run mypy + tsc"
 	@echo "  test              Run all tests"
+	@echo "  test-e2e          Run Playwright E2E tests with backend+frontend running"
 	@echo "  build             Build production images"
 	@echo "  clean             Remove containers and volumes"
 	@echo "  sync-edupage      Trigger EduPage sync"
@@ -56,8 +58,12 @@ shell:
 	docker compose exec backend uv run python manage.py shell
 
 lint:
-	cd $(BACKEND_DIR) && uv run ruff check .
+	cd $(BACKEND_DIR) && uv run ruff check . && uv run black --check .
 	cd $(FRONTEND_DIR) && pnpm run lint
+
+lint-fix:
+	cd $(BACKEND_DIR) && uv run ruff check --fix . && uv run black .
+	cd $(FRONTEND_DIR) && pnpm exec eslint . --fix && pnpm exec biome format --write src
 
 format:
 	cd $(BACKEND_DIR) && uv run black . && uv run ruff check --fix .
@@ -70,6 +76,9 @@ typecheck:
 test:
 	cd $(BACKEND_DIR) && uv run pytest
 	cd $(FRONTEND_DIR) && pnpm run test
+
+test-e2e:
+	./scripts/e2e.sh
 
 build:
 	docker compose -f docker-compose.yml -f docker-compose.prod.yml build

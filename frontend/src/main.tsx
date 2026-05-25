@@ -33,5 +33,5 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
         <App />
       </QueryClientProvider>
     </ApolloProvider>
-  </React.StrictMode>,
+  </React.StrictMode>
 );

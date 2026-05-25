@@ -32,7 +32,7 @@ export default function TimetablePage() {
                   key={d}
                   className={clsx(
                     "text-left p-3 font-medium",
-                    i + 1 === todayIndex ? "text-blue-600" : "text-gray-700",
+                    i + 1 === todayIndex ? "text-blue-600" : "text-gray-700"
                   )}
                 >
                   {d}
@@ -49,9 +49,7 @@ export default function TimetablePage() {
                 </td>
                 {DAYS.map((_, dayIdx) => {
                   const day = dayIdx + 1;
-                  const entry = entries?.find(
-                    (e) => e.day === day && e.period === period.id,
-                  );
+                  const entry = entries?.find((e) => e.day === day && e.period === period.id);
                   return (
                     <td key={day} className="p-2">
                       {entry && (
@@ -60,9 +58,7 @@ export default function TimetablePage() {
                           style={{ backgroundColor: entry.subject.color }}
                         >
                           <div className="font-semibold">{entry.subject.short_name}</div>
-                          {entry.room_name && (
-                            <div className="opacity-80">{entry.room_name}</div>
-                          )}
+                          {entry.room_name && <div className="opacity-80">{entry.room_name}</div>}
                           {entry.teacher_name && (
                             <div className="opacity-80 truncate">{entry.teacher_name}</div>
                           )}

@@ -25,7 +25,9 @@ class AttendanceRecord(models.Model):
     )
     date = models.DateField(default=timezone.now)
     period = models.ForeignKey("timetable.Period", on_delete=models.SET_NULL, null=True)
-    subject = models.ForeignKey("timetable.Subject", on_delete=models.SET_NULL, null=True)
+    subject = models.ForeignKey(
+        "timetable.Subject", on_delete=models.SET_NULL, null=True
+    )
     status = models.CharField(max_length=20, choices=AttendanceStatus.choices)
     note = models.TextField(blank=True)
     recorded_by = models.ForeignKey(

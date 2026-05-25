@@ -13,7 +13,9 @@ class SyncStatus(models.TextChoices):
 class EdupageSyncJob(models.Model):
     started_at = models.DateTimeField(default=timezone.now)
     finished_at = models.DateTimeField(null=True, blank=True)
-    status = models.CharField(max_length=20, choices=SyncStatus.choices, default=SyncStatus.PENDING)
+    status = models.CharField(
+        max_length=20, choices=SyncStatus.choices, default=SyncStatus.PENDING
+    )
     triggered_by = models.ForeignKey(
         "accounts.User", on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -29,7 +31,9 @@ class EdupageSyncJob(models.Model):
 
 
 class EdupageSyncLog(models.Model):
-    job = models.ForeignKey(EdupageSyncJob, on_delete=models.CASCADE, related_name="logs")
+    job = models.ForeignKey(
+        EdupageSyncJob, on_delete=models.CASCADE, related_name="logs"
+    )
     timestamp = models.DateTimeField(auto_now_add=True)
     level = models.CharField(max_length=10, default="INFO")
     message = models.TextField()
@@ -41,7 +45,10 @@ class EdupageSyncLog(models.Model):
 
 class EdupageCredential(models.Model):
     """Per-user EduPage credentials for syncing their personal data."""
-    user = models.OneToOneField("accounts.User", on_delete=models.CASCADE, related_name="edupage_credential")
+
+    user = models.OneToOneField(
+        "accounts.User", on_delete=models.CASCADE, related_name="edupage_credential"
+    )
     server = models.CharField(max_length=200)
     username = models.CharField(max_length=200)
     # Password is stored encrypted — use the service layer, never access directly

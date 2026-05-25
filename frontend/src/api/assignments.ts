@@ -1,11 +1,10 @@
 import apiClient from "./client";
-import type { Assignment, Submission, Grade, PaginatedResponse } from "@/types";
+import type { Assignment, Submission, Grade } from "@/types";
 
 export const getAssignments = (params?: Record<string, string | number>) =>
   apiClient.get<Assignment[]>("/assignments/", { params });
 
-export const getAssignment = (id: number) =>
-  apiClient.get<Assignment>(`/assignments/${id}/`);
+export const getAssignment = (id: number) => apiClient.get<Assignment>(`/assignments/${id}/`);
 
 export const createAssignment = (data: Partial<Assignment>) =>
   apiClient.post<Assignment>("/assignments/", data);

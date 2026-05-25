@@ -12,13 +12,28 @@ class Channel(models.Model):
     channel_type = models.CharField(max_length=20, choices=ChannelType.choices)
     description = models.TextField(blank=True)
     school_class = models.ForeignKey(
-        "accounts.SchoolClass", on_delete=models.CASCADE, null=True, blank=True, related_name="channels"
+        "accounts.SchoolClass",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="channels",
     )
     subject = models.ForeignKey(
-        "timetable.Subject", on_delete=models.SET_NULL, null=True, blank=True, related_name="channels"
+        "timetable.Subject",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="channels",
     )
-    members = models.ManyToManyField("accounts.User", through="ChannelMembership", related_name="channels")
-    created_by = models.ForeignKey("accounts.User", on_delete=models.SET_NULL, null=True, related_name="created_channels")
+    members = models.ManyToManyField(  # type: ignore[var-annotated]
+        "accounts.User", through="ChannelMembership", related_name="channels"
+    )
+    created_by = models.ForeignKey(
+        "accounts.User",
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name="created_channels",
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     is_archived = models.BooleanField(default=False)
 
@@ -41,10 +56,16 @@ class ChannelMembership(models.Model):
 
 
 class Message(models.Model):
-    channel = models.ForeignKey(Channel, on_delete=models.CASCADE, related_name="messages")
-    author = models.ForeignKey("accounts.User", on_delete=models.CASCADE, related_name="messages")
+    channel = models.ForeignKey(
+        Channel, on_delete=models.CASCADE, related_name="messages"
+    )
+    author = models.ForeignKey(
+        "accounts.User", on_delete=models.CASCADE, related_name="messages"
+    )
     content = models.TextField()
-    attachment = models.FileField(upload_to="chat_attachments/%Y/%m/", null=True, blank=True)
+    attachment = models.FileField(
+        upload_to="chat_attachments/%Y/%m/", null=True, blank=True
+    )
     reply_to = models.ForeignKey(
         "self", on_delete=models.SET_NULL, null=True, blank=True, related_name="replies"
     )
@@ -60,7 +81,9 @@ class Message(models.Model):
 
 
 class MessageReaction(models.Model):
-    message = models.ForeignKey(Message, on_delete=models.CASCADE, related_name="reactions")
+    message = models.ForeignKey(
+        Message, on_delete=models.CASCADE, related_name="reactions"
+    )
     user = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
     emoji = models.CharField(max_length=10)
 

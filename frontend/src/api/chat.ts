@@ -1,8 +1,7 @@
 import apiClient from "./client";
-import type { Channel, Message, PaginatedResponse } from "@/types";
+import type { Channel, Message } from "@/types";
 
-export const getChannels = () =>
-  apiClient.get<Channel[]>("/chat/channels/");
+export const getChannels = () => apiClient.get<Channel[]>("/chat/channels/");
 
 export const createChannel = (data: Partial<Channel>) =>
   apiClient.post<Channel>("/chat/channels/", data);

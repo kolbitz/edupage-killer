@@ -11,7 +11,9 @@ class UserRole(models.TextChoices):
 
 class User(AbstractUser):
     email = models.EmailField(unique=True)
-    role = models.CharField(max_length=20, choices=UserRole.choices, default=UserRole.STUDENT)
+    role = models.CharField(
+        max_length=20, choices=UserRole.choices, default=UserRole.STUDENT
+    )
     avatar = models.ImageField(upload_to="avatars/", null=True, blank=True)
     phone = models.CharField(max_length=30, blank=True)
     edupage_id = models.CharField(max_length=100, blank=True, db_index=True)
@@ -45,9 +47,15 @@ class SchoolClass(models.Model):
 
 
 class StudentProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="student_profile")
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="student_profile"
+    )
     school_class = models.ForeignKey(
-        SchoolClass, on_delete=models.SET_NULL, null=True, blank=True, related_name="students"
+        SchoolClass,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="students",
     )
     student_number = models.CharField(max_length=20, blank=True)
     date_of_birth = models.DateField(null=True, blank=True)
@@ -57,7 +65,9 @@ class StudentProfile(models.Model):
 
 
 class TeacherProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="teacher_profile")
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="teacher_profile"
+    )
     subjects = models.ManyToManyField("timetable.Subject", blank=True)
     title = models.CharField(max_length=50, blank=True)
     room = models.CharField(max_length=20, blank=True)
@@ -67,9 +77,14 @@ class TeacherProfile(models.Model):
 
 
 class ParentProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="parent_profile")
+    user = models.OneToOneField(
+        User, on_delete=models.CASCADE, related_name="parent_profile"
+    )
     children = models.ManyToManyField(
-        User, related_name="parents", limit_choices_to={"role": UserRole.STUDENT}, blank=True
+        User,
+        related_name="parents",
+        limit_choices_to={"role": UserRole.STUDENT},
+        blank=True,
     )
 
     def __str__(self) -> str:

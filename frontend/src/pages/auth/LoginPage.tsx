@@ -77,7 +77,9 @@ export default function LoginPage() {
             </div>
           )}
           <div>
-            <label className="label" htmlFor="email">Email</label>
+            <label className="label" htmlFor="email">
+              Email
+            </label>
             <input
               id="email"
               type="email"
@@ -89,7 +91,9 @@ export default function LoginPage() {
             />
           </div>
           <div>
-            <label className="label" htmlFor="password">Password</label>
+            <label className="label" htmlFor="password">
+              Password
+            </label>
             <input
               id="password"
               type="password"
@@ -100,11 +104,7 @@ export default function LoginPage() {
               placeholder="••••••••"
             />
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full py-2.5"
-          >
+          <button type="submit" disabled={loading} className="btn-primary w-full py-2.5">
             {loading ? "Signing in..." : "Sign in"}
           </button>
         </form>

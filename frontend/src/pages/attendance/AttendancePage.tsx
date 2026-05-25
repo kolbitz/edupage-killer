@@ -34,7 +34,12 @@ export default function AttendancePage() {
         {Object.entries(stats).map(([status, count]) => (
           <div key={status} className="card text-center">
             <div className="text-3xl font-bold">{count}</div>
-            <div className={clsx("text-sm mt-1 capitalize px-2 py-0.5 rounded-full inline-block", STATUS_STYLES[status])}>
+            <div
+              className={clsx(
+                "text-sm mt-1 capitalize px-2 py-0.5 rounded-full inline-block",
+                STATUS_STYLES[status]
+              )}
+            >
               {status}
             </div>
           </div>
@@ -44,13 +49,21 @@ export default function AttendancePage() {
       <div className="card">
         <div className="flex items-center justify-between mb-2">
           <span className="font-medium">Overall attendance rate</span>
-          <span className={clsx("font-bold text-lg", attendanceRate >= 80 ? "text-green-600" : "text-red-600")}>
+          <span
+            className={clsx(
+              "font-bold text-lg",
+              attendanceRate >= 80 ? "text-green-600" : "text-red-600"
+            )}
+          >
             {attendanceRate}%
           </span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2">
           <div
-            className={clsx("h-2 rounded-full", attendanceRate >= 80 ? "bg-green-500" : "bg-red-500")}
+            className={clsx(
+              "h-2 rounded-full",
+              attendanceRate >= 80 ? "bg-green-500" : "bg-red-500"
+            )}
             style={{ width: `${attendanceRate}%` }}
           />
         </div>
@@ -78,7 +91,12 @@ export default function AttendancePage() {
                     <td className="py-2 px-3">{format(new Date(record.date), "MMM d, yyyy")}</td>
                     <td className="py-2 px-3">{record.subject_name || "—"}</td>
                     <td className="py-2 px-3">
-                      <span className={clsx("px-2 py-0.5 rounded-full text-xs capitalize", STATUS_STYLES[record.status])}>
+                      <span
+                        className={clsx(
+                          "px-2 py-0.5 rounded-full text-xs capitalize",
+                          STATUS_STYLES[record.status]
+                        )}
+                      >
                         {record.status}
                       </span>
                     </td>

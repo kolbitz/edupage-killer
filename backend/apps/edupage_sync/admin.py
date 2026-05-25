@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import EdupageSyncJob, EdupageSyncLog, EdupageCredential
+
+from .models import EdupageCredential, EdupageSyncJob, EdupageSyncLog
 
 
 @admin.register(EdupageSyncJob)

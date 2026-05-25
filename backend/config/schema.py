@@ -1,13 +1,12 @@
 import strawberry
-from strawberry.types import Info
 
 import apps.accounts.schema as accounts_schema
-import apps.timetable.schema as timetable_schema
-import apps.attendance.schema as attendance_schema
-import apps.materials.schema as materials_schema
-import apps.chat.schema as chat_schema
 import apps.assignments.schema as assignments_schema
+import apps.attendance.schema as attendance_schema
+import apps.chat.schema as chat_schema
+import apps.materials.schema as materials_schema
 import apps.notes.schema as notes_schema
+import apps.timetable.schema as timetable_schema
 
 
 @strawberry.type

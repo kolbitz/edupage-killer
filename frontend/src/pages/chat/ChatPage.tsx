@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
-import { getChannels, getMessages, createChannel } from "@/api/chat";
+import { getChannels, getMessages } from "@/api/chat";
 import { useAuthStore } from "@/store/auth";
 import { Send, Hash, Plus, Users } from "lucide-react";
 import { format } from "date-fns";
@@ -11,7 +11,6 @@ export default function ChatPage() {
   const { channelId } = useParams<{ channelId: string }>();
   const navigate = useNavigate();
   const user = useAuthStore((s) => s.user);
-  const queryClient = useQueryClient();
   const [input, setInput] = useState("");
   const [wsMessages, setWsMessages] = useState<Message[]>([]);
   const wsRef = useRef<WebSocket | null>(null);
@@ -26,8 +25,7 @@ export default function ChatPage() {
 
   const { data: messages } = useQuery({
     queryKey: ["messages", activeChannelId],
-    queryFn: () =>
-      activeChannelId ? getMessages(activeChannelId).then((r) => r.data) : [],
+    queryFn: () => (activeChannelId ? getMessages(activeChannelId).then((r) => r.data) : []),
     enabled: !!activeChannelId,
   });
 
@@ -128,12 +126,12 @@ export default function ChatPage() {
                   key={`${msg.id}-${msg.created_at}`}
                   className={`flex gap-3 ${msg.author === user?.id ? "flex-row-reverse" : ""}`}
                 >
-                  <div
-                    className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-medium flex-shrink-0"
-                  >
+                  <div className="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs font-medium flex-shrink-0">
                     {msg.author_name?.charAt(0) ?? "?"}
                   </div>
-                  <div className={`max-w-xs lg:max-w-md ${msg.author === user?.id ? "items-end" : "items-start"} flex flex-col`}>
+                  <div
+                    className={`max-w-xs lg:max-w-md ${msg.author === user?.id ? "items-end" : "items-start"} flex flex-col`}
+                  >
                     <div className="flex items-baseline gap-2 mb-1">
                       <span className="text-xs font-medium text-gray-700">{msg.author_name}</span>
                       <span className="text-xs text-gray-400">
@@ -162,11 +160,7 @@ export default function ChatPage() {
                 placeholder={`Message #${activeChannel.name}`}
                 className="input flex-1"
               />
-              <button
-                type="submit"
-                disabled={!input.trim()}
-                className="btn-primary px-3"
-              >
+              <button type="submit" disabled={!input.trim()} className="btn-primary px-3">
                 <Send size={16} />
               </button>
             </form>
