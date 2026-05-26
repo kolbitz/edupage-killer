@@ -9,7 +9,7 @@ const apiClient = axios.create({
 // custom endpoints and the e2e mocks return bare arrays. Accept both.
 export type PaginatedOrList<T> = T[] | { results: T[] };
 export const unwrapList = <T>(data: PaginatedOrList<T>): T[] =>
-  Array.isArray(data) ? data : data.results ?? [];
+  Array.isArray(data) ? data : (data.results ?? []);
 
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("access_token");

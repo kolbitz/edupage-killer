@@ -1,9 +1,7 @@
 import apiClient, { unwrapList, type PaginatedOrList } from "./client";
 import type { Assignment, Submission, Grade } from "@/types";
 
-export const getAssignments = (
-  params?: Record<string, string | number>,
-): Promise<Assignment[]> =>
+export const getAssignments = (params?: Record<string, string | number>): Promise<Assignment[]> =>
   apiClient
     .get<PaginatedOrList<Assignment>>("/assignments/", { params })
     .then((r) => unwrapList(r.data));

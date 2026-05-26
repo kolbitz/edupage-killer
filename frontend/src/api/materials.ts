@@ -1,9 +1,7 @@
 import apiClient, { unwrapList, type PaginatedOrList } from "./client";
 import type { Material } from "@/types";
 
-export const getMaterials = (
-  params?: Record<string, string | number>,
-): Promise<Material[]> =>
+export const getMaterials = (params?: Record<string, string | number>): Promise<Material[]> =>
   apiClient
     .get<PaginatedOrList<Material>>("/materials/", { params })
     .then((r) => unwrapList(r.data));

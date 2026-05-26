@@ -32,7 +32,9 @@ SEED_USERS = [
 
 
 class Command(BaseCommand):
-    help = "Create default local-dev users (idempotent). Refuses to run when DEBUG=False."
+    help = (
+        "Create default local-dev users (idempotent). Refuses to run when DEBUG=False."
+    )
 
     def handle(self, *args: Any, **options: Any) -> None:
         if not settings.DEBUG:
@@ -42,9 +44,7 @@ class Command(BaseCommand):
             data = dict(spec)
             password = data.pop("password")
             email = data["email"]
-            user, created = User.objects.get_or_create(
-                email=email, defaults=data
-            )
+            user, created = User.objects.get_or_create(email=email, defaults=data)
             if created:
                 user.set_password(password)
                 user.save()
