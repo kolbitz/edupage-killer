@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>EduKiller — School Management</title>
+    <script>
+      // SPA redirect for GitHub Pages — handles both /repo/ and /repo/pr-N/ base paths.
+      // Saves the original URL in sessionStorage, then redirects to the base so the
+      // app's index.html can recover the route client-side.
+      var path = window.location.pathname;
+      var search = window.location.search;
+      var hash = window.location.hash;
+      var m = path.match(/^(\/[^/]+\/pr-\d+\/)/);
+      var base = m ? m[1] : path.split('/').slice(0, 2).join('/') + '/';
+      sessionStorage.setItem('spa-redirect', path + search + hash);
+      window.location.replace(base);
+    </script>
+  </head>
+  <body></body>
+</html>
