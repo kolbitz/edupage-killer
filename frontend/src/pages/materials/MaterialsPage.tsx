@@ -21,7 +21,7 @@ export default function MaterialsPage() {
 
   const { data, isLoading } = useQuery({
     queryKey: ["materials", filter],
-    queryFn: () => getMaterials(filter ? { material_type: filter } : {}).then((r) => r.data.results),
+    queryFn: () => getMaterials(filter ? { material_type: filter } : {}),
   });
 
   const deleteMut = useMutation({
@@ -61,7 +61,9 @@ export default function MaterialsPage() {
             key={t}
             onClick={() => setFilter(t)}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              filter === t ? "bg-blue-600 text-white" : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+              filter === t
+                ? "bg-blue-600 text-white"
+                : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}
           >
             {t || "All"}
@@ -83,16 +85,22 @@ export default function MaterialsPage() {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-sm truncate">{material.title}</h3>
-                    <p className="text-xs text-gray-500 mt-0.5 capitalize">{material.material_type}</p>
+                    <p className="text-xs text-gray-500 mt-0.5 capitalize">
+                      {material.material_type}
+                    </p>
                     {material.description && (
-                      <p className="text-xs text-gray-600 mt-1 line-clamp-2">{material.description}</p>
+                      <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                        {material.description}
+                      </p>
                     )}
                   </div>
                 </div>
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100">
                   <div>
                     <p className="text-xs text-gray-500">{material.uploaded_by_name}</p>
-                    <p className="text-xs text-gray-400">{format(new Date(material.created_at), "MMM d")}</p>
+                    <p className="text-xs text-gray-400">
+                      {format(new Date(material.created_at), "MMM d")}
+                    </p>
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="flex items-center gap-1 text-xs text-gray-400">

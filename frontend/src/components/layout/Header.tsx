@@ -4,7 +4,7 @@ import { LogOut, Bell } from "lucide-react";
 import { logout as apiLogout } from "@/api/auth";
 
 export default function Header() {
-  const { user, logout, refreshToken } = useAuthStore();
+  const { logout, refreshToken } = useAuthStore();
   const navigate = useNavigate();
 
   const handleLogout = async () => {

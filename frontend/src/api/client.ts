@@ -5,6 +5,12 @@ const apiClient = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+// DRF list endpoints are paginated by default ({ results: [...] }), but some
+// custom endpoints and the e2e mocks return bare arrays. Accept both.
+export type PaginatedOrList<T> = T[] | { results: T[] };
+export const unwrapList = <T>(data: PaginatedOrList<T>): T[] =>
+  Array.isArray(data) ? data : (data.results ?? []);
+
 apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("access_token");
   if (token) {
@@ -34,7 +40,7 @@ apiClient.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  },
+  }
 );
 
 export default apiClient;

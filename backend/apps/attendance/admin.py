@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import AttendanceRecord, AbsenceJustification
+
+from .models import AbsenceJustification, AttendanceRecord
 
 
 @admin.register(AttendanceRecord)

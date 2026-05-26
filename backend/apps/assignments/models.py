@@ -28,7 +28,9 @@ class Assignment(models.Model):
     )
     due_date = models.DateTimeField()
     created_at = models.DateTimeField(auto_now_add=True)
-    max_score = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
+    max_score = models.DecimalField(
+        max_digits=6, decimal_places=2, null=True, blank=True
+    )
     attachment = models.FileField(upload_to="assignments/%Y/%m/", null=True, blank=True)
     is_graded = models.BooleanField(default=False)
     edupage_id = models.CharField(max_length=100, blank=True, db_index=True)
@@ -51,7 +53,9 @@ class Submission(models.Model):
         LATE = "late", "Late"
         GRADED = "graded", "Graded"
 
-    assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name="submissions")
+    assignment = models.ForeignKey(
+        Assignment, on_delete=models.CASCADE, related_name="submissions"
+    )
     student = models.ForeignKey(
         "accounts.User",
         on_delete=models.CASCADE,
@@ -61,7 +65,9 @@ class Submission(models.Model):
     file = models.FileField(upload_to="submissions/%Y/%m/", null=True, blank=True)
     text_content = models.TextField(blank=True)
     submitted_at = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=20, choices=Status.choices, default=Status.PENDING)
+    status = models.CharField(
+        max_length=20, choices=Status.choices, default=Status.PENDING
+    )
     score = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)
     feedback = models.TextField(blank=True)
     graded_by = models.ForeignKey(
@@ -90,7 +96,11 @@ class Grade(models.Model):
         "accounts.User", on_delete=models.CASCADE, related_name="given_grades"
     )
     submission = models.OneToOneField(
-        Submission, on_delete=models.SET_NULL, null=True, blank=True, related_name="grade"
+        Submission,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="grade",
     )
     value = models.DecimalField(max_digits=5, decimal_places=2)
     max_value = models.DecimalField(max_digits=5, decimal_places=2, default=100)

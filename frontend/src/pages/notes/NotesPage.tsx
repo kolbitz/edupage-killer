@@ -14,11 +14,15 @@ const VISIBILITY_ICONS = {
 export default function NotesPage() {
   const queryClient = useQueryClient();
   const [showNew, setShowNew] = useState(false);
-  const [newNote, setNewNote] = useState({ title: "", content: "", visibility: "private" as Note["visibility"] });
+  const [newNote, setNewNote] = useState({
+    title: "",
+    content: "",
+    visibility: "private" as Note["visibility"],
+  });
 
   const { data: notes, isLoading } = useQuery({
     queryKey: ["notes"],
-    queryFn: () => getNotes().then((r) => r.data),
+    queryFn: () => getNotes(),
   });
 
   const createMut = useMutation({
@@ -65,14 +69,18 @@ export default function NotesPage() {
               <select
                 className="input w-auto"
                 value={newNote.visibility}
-                onChange={(e) => setNewNote((n) => ({ ...n, visibility: e.target.value as Note["visibility"] }))}
+                onChange={(e) =>
+                  setNewNote((n) => ({ ...n, visibility: e.target.value as Note["visibility"] }))
+                }
               >
                 <option value="private">Private</option>
                 <option value="class">Whole Class</option>
                 <option value="school">Whole School</option>
               </select>
               <div className="flex gap-2 ml-auto">
-                <button onClick={() => setShowNew(false)} className="btn-secondary">Cancel</button>
+                <button onClick={() => setShowNew(false)} className="btn-secondary">
+                  Cancel
+                </button>
                 <button
                   onClick={() => createMut.mutate(newNote)}
                   disabled={!newNote.content.trim() || createMut.isPending}
@@ -100,9 +108,7 @@ export default function NotesPage() {
             return (
               <div key={note.id} className="card hover:shadow-md transition-shadow flex flex-col">
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <h3 className="font-medium text-sm">
-                    {note.title || "Untitled note"}
-                  </h3>
+                  <h3 className="font-medium text-sm">{note.title || "Untitled note"}</h3>
                   <button
                     onClick={() => deleteMut.mutate(note.id)}
                     className="text-gray-300 hover:text-red-400 flex-shrink-0"
@@ -116,7 +122,10 @@ export default function NotesPage() {
                 {note.tags && (
                   <div className="flex flex-wrap gap-1 mt-2">
                     {note.tags.split(",").map((tag) => (
-                      <span key={tag} className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">
+                      <span
+                        key={tag}
+                        className="text-xs bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full"
+                      >
                         {tag.trim()}
                       </span>
                     ))}

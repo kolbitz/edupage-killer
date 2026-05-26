@@ -1,4 +1,6 @@
 import logging
+from typing import Any
+
 from celery import shared_task
 from django.utils import timezone
 
@@ -8,8 +10,8 @@ from .service import EdupageSyncService
 logger = logging.getLogger(__name__)
 
 
-@shared_task(bind=True, max_retries=3)
-def run_edupage_sync(self, job_id: int) -> dict:  # type: ignore[type-arg]
+@shared_task(bind=True, max_retries=3)  # type: ignore[untyped-decorator]
+def run_edupage_sync(self: Any, job_id: int) -> dict[str, Any]:
     job = EdupageSyncJob.objects.get(pk=job_id)
     job.status = SyncStatus.RUNNING
     job.save()
@@ -30,11 +32,13 @@ def run_edupage_sync(self, job_id: int) -> dict:  # type: ignore[type-arg]
         job.error_message = str(exc)
         job.finished_at = timezone.now()
         job.save()
-        raise self.retry(exc=exc, countdown=60)
+        raise self.retry(exc=exc, countdown=60) from exc
 
 
-@shared_task
+@shared_task  # type: ignore[untyped-decorator]
 def scheduled_edupage_sync() -> None:
     """Called by celery-beat on a schedule."""
-    job = EdupageSyncJob.objects.create(sync_types=["timetable", "users", "grades", "homework"])
+    job = EdupageSyncJob.objects.create(
+        sync_types=["timetable", "users", "grades", "homework"]
+    )
     run_edupage_sync.delay(job.pk)

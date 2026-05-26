@@ -1,10 +1,18 @@
 from django.contrib import admin
-from .models import Assignment, Submission, Grade
+
+from .models import Assignment, Grade, Submission
 
 
 @admin.register(Assignment)
 class AssignmentAdmin(admin.ModelAdmin):  # type: ignore[type-arg]
-    list_display = ("title", "assignment_type", "subject", "school_class", "due_date", "assigned_by")
+    list_display = (
+        "title",
+        "assignment_type",
+        "subject",
+        "school_class",
+        "due_date",
+        "assigned_by",
+    )
     list_filter = ("assignment_type", "is_graded", "subject")
     search_fields = ("title",)
 

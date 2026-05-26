@@ -43,7 +43,9 @@ class Material(models.Model):
     uploaded_by = models.ForeignKey(
         "accounts.User", on_delete=models.CASCADE, related_name="uploaded_materials"
     )
-    visibility = models.CharField(max_length=20, choices=VisibilityType.choices, default=VisibilityType.CLASS)
+    visibility = models.CharField(
+        max_length=20, choices=VisibilityType.choices, default=VisibilityType.CLASS
+    )
     shared_with = models.ManyToManyField(
         "accounts.User", related_name="shared_materials", blank=True
     )
@@ -59,7 +61,9 @@ class Material(models.Model):
 
 
 class MaterialComment(models.Model):
-    material = models.ForeignKey(Material, on_delete=models.CASCADE, related_name="comments")
+    material = models.ForeignKey(
+        Material, on_delete=models.CASCADE, related_name="comments"
+    )
     author = models.ForeignKey("accounts.User", on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

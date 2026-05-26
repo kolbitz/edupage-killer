@@ -1,7 +1,8 @@
 import strawberry
 import strawberry.django as strawberry_django
 from strawberry import auto
-from .models import User, SchoolClass
+
+from .models import SchoolClass, User
 
 
 @strawberry_django.type(User)
@@ -31,7 +32,7 @@ class Query:
     @strawberry_django.field
     def me(self, info: strawberry.types.Info) -> UserType | None:
         user = info.context.request.user
-        return user if user.is_authenticated else None  # type: ignore[return-value]
+        return user if user.is_authenticated else None
 
 
 @strawberry.type

@@ -1,12 +1,15 @@
 import json
-from channels.generic.websocket import AsyncWebsocketConsumer
+
 from channels.db import database_sync_to_async
+from channels.generic.websocket import AsyncWebsocketConsumer
 from django.utils import timezone
 
-from .models import Channel, Message, ChannelMembership
+from apps.accounts.models import User
+
+from .models import ChannelMembership, Message
 
 
-class ChatConsumer(AsyncWebsocketConsumer):
+class ChatConsumer(AsyncWebsocketConsumer):  # type: ignore[misc]
     async def connect(self) -> None:
         self.channel_id = self.scope["url_route"]["kwargs"]["channel_id"]
         self.room_group_name = f"chat_{self.channel_id}"
@@ -81,7 +84,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self._save_reaction(user, message_id, emoji)
             await self.channel_layer.group_send(
                 self.room_group_name,
-                {"type": "message_reaction", "message_id": message_id, "user_id": user.id, "emoji": emoji},
+                {
+                    "type": "message_reaction",
+                    "message_id": message_id,
+                    "user_id": user.id,
+                    "emoji": emoji,
+                },
             )
 
     async def _handle_read(self) -> None:
@@ -97,12 +105,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def message_reaction(self, event: dict) -> None:  # type: ignore[type-arg]
         await self.send(text_data=json.dumps({"type": "reaction", **event}))
 
-    @database_sync_to_async
-    def _is_member(self, user, channel_id: int) -> bool:  # type: ignore[type-arg]
-        return ChannelMembership.objects.filter(channel_id=channel_id, user=user).exists()
+    @database_sync_to_async  # type: ignore[untyped-decorator]
+    def _is_member(self, user: User, channel_id: int) -> bool:
+        return ChannelMembership.objects.filter(
+            channel_id=channel_id, user=user
+        ).exists()
 
-    @database_sync_to_async
-    def _save_message(self, user, content: str, reply_to_id):  # type: ignore[type-arg]
+    @database_sync_to_async  # type: ignore[untyped-decorator]
+    def _save_message(
+        self, user: User, content: str, reply_to_id: int | None
+    ) -> Message:
         return Message.objects.create(
             channel_id=self.channel_id,
             author=user,
@@ -110,15 +122,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
             reply_to_id=reply_to_id,
         )
 
-    @database_sync_to_async
-    def _save_reaction(self, user, message_id: int, emoji: str) -> None:
+    @database_sync_to_async  # type: ignore[untyped-decorator]
+    def _save_reaction(self, user: User, message_id: int, emoji: str) -> None:
         from .models import MessageReaction
+
         MessageReaction.objects.get_or_create(
             message_id=message_id, user=user, emoji=emoji
         )
 
-    @database_sync_to_async
-    def _update_last_read(self, user, channel_id: int) -> None:
+    @database_sync_to_async  # type: ignore[untyped-decorator]
+    def _update_last_read(self, user: User, channel_id: int) -> None:
         ChannelMembership.objects.filter(channel_id=channel_id, user=user).update(
             last_read_at=timezone.now()
         )

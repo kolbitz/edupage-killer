@@ -7,11 +7,11 @@ const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 export default function TimetablePage() {
   const { data: entries, isLoading } = useQuery({
     queryKey: ["my-timetable"],
-    queryFn: () => getMyTimetable().then((r) => r.data),
+    queryFn: () => getMyTimetable(),
   });
   const { data: periods } = useQuery({
     queryKey: ["periods"],
-    queryFn: () => getPeriods().then((r) => r.data),
+    queryFn: () => getPeriods(),
   });
 
   if (isLoading) return <div className="text-gray-500">Loading timetable…</div>;
@@ -32,7 +32,7 @@ export default function TimetablePage() {
                   key={d}
                   className={clsx(
                     "text-left p-3 font-medium",
-                    i + 1 === todayIndex ? "text-blue-600" : "text-gray-700",
+                    i + 1 === todayIndex ? "text-blue-600" : "text-gray-700"
                   )}
                 >
                   {d}
@@ -49,9 +49,7 @@ export default function TimetablePage() {
                 </td>
                 {DAYS.map((_, dayIdx) => {
                   const day = dayIdx + 1;
-                  const entry = entries?.find(
-                    (e) => e.day === day && e.period === period.id,
-                  );
+                  const entry = entries?.find((e) => e.day === day && e.period === period.id);
                   return (
                     <td key={day} className="p-2">
                       {entry && (
@@ -60,9 +58,7 @@ export default function TimetablePage() {
                           style={{ backgroundColor: entry.subject.color }}
                         >
                           <div className="font-semibold">{entry.subject.short_name}</div>
-                          {entry.room_name && (
-                            <div className="opacity-80">{entry.room_name}</div>
-                          )}
+                          {entry.room_name && <div className="opacity-80">{entry.room_name}</div>}
                           {entry.teacher_name && (
                             <div className="opacity-80 truncate">{entry.teacher_name}</div>
                           )}

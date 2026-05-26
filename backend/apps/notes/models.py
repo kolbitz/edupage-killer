@@ -10,7 +10,9 @@ class NoteVisibility(models.TextChoices):
 class Note(models.Model):
     title = models.CharField(max_length=255, blank=True)
     content = models.TextField()
-    author = models.ForeignKey("accounts.User", on_delete=models.CASCADE, related_name="notes")
+    author = models.ForeignKey(
+        "accounts.User", on_delete=models.CASCADE, related_name="notes"
+    )
     subject = models.ForeignKey(
         "timetable.Subject", on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -18,7 +20,9 @@ class Note(models.Model):
         "timetable.TimetableEntry", on_delete=models.SET_NULL, null=True, blank=True
     )
     lesson_date = models.DateField(null=True, blank=True)
-    visibility = models.CharField(max_length=20, choices=NoteVisibility.choices, default=NoteVisibility.PRIVATE)
+    visibility = models.CharField(
+        max_length=20, choices=NoteVisibility.choices, default=NoteVisibility.PRIVATE
+    )
     school_class = models.ForeignKey(
         "accounts.SchoolClass", on_delete=models.SET_NULL, null=True, blank=True
     )

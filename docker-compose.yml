@@ -36,6 +36,8 @@ services:
       - "8000:8000"
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.development
+      - POSTGRES_HOST=db
+      - REDIS_URL=redis://redis:6379/0
     env_file:
       - .env
     depends_on:
@@ -56,6 +58,8 @@ services:
       - media_files:/app/media
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.development
+      - POSTGRES_HOST=db
+      - REDIS_URL=redis://redis:6379/0
     env_file:
       - .env
     depends_on:
@@ -73,6 +77,8 @@ services:
       - ./backend:/app
     environment:
       - DJANGO_SETTINGS_MODULE=config.settings.development
+      - POSTGRES_HOST=db
+      - REDIS_URL=redis://redis:6379/0
     env_file:
       - .env
     depends_on:

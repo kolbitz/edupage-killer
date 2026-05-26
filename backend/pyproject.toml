@@ -8,6 +8,7 @@ dependencies = [
     "djangorestframework>=3.15",
     "djangorestframework-simplejwt>=5.3",
     "strawberry-graphql[django]>=0.235",
+    "strawberry-graphql-django>=0.50",
     "channels[daphne]>=4.1",
     "channels-redis>=4.2",
     "django-allauth[socialaccount]>=0.63",
@@ -25,8 +26,8 @@ dependencies = [
     "daphne>=4.1",
 ]
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "black>=24.8",
     "ruff>=0.6",
     "mypy>=1.11",
@@ -59,6 +60,6 @@ ignore_missing_imports = true
 django_settings_module = "config.settings.development"
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "config.settings.development"
+DJANGO_SETTINGS_MODULE = "config.settings.test"
 python_files = ["test_*.py", "*_test.py"]
 asyncio_mode = "auto"

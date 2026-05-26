@@ -46,7 +46,9 @@ def teacher(db: None) -> User:
 
 
 @pytest.fixture
-def attendance_record(db: None, student: User, period: Period, subject: Subject) -> AttendanceRecord:
+def attendance_record(
+    db: None, student: User, period: Period, subject: Subject
+) -> AttendanceRecord:
     return AttendanceRecord.objects.create(
         student=student,
         date=timezone.now().date(),
@@ -64,7 +66,7 @@ class TestMyAttendanceView:
         client.force_authenticate(user=student)
         response = client.get("/api/attendance/my/")
         assert response.status_code == 200
-        assert all(r["student"] == student.id for r in response.data)
+        assert all(r["student"] == student.id for r in response.data["results"])
 
     def test_unauthenticated_returns_401(self, client: APIClient) -> None:
         response = client.get("/api/attendance/my/")

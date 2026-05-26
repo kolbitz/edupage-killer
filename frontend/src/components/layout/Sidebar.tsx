@@ -1,8 +1,13 @@
 import { NavLink } from "react-router-dom";
 import { useAuthStore } from "@/store/auth";
 import {
-  LayoutDashboard, Calendar, UserCheck, FileText,
-  MessageSquare, BookOpen, StickyNote, Settings
+  LayoutDashboard,
+  Calendar,
+  UserCheck,
+  FileText,
+  MessageSquare,
+  BookOpen,
+  StickyNote,
 } from "lucide-react";
 import { clsx } from "clsx";
 
@@ -36,7 +41,7 @@ export default function Sidebar() {
                 "flex items-center gap-3 px-4 py-2.5 mx-2 rounded-lg text-sm font-medium transition-colors",
                 isActive
                   ? "bg-blue-50 text-blue-700"
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900",
+                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
               )
             }
           >
