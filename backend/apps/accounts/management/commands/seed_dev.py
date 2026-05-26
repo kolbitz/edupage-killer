@@ -42,7 +42,7 @@ class Command(BaseCommand):
 
         for spec in SEED_USERS:
             data = dict(spec)
-            password = data.pop("password")
+            password = str(data.pop("password"))
             email = data["email"]
             user, created = User.objects.get_or_create(email=email, defaults=data)
             if created:
