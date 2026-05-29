@@ -502,8 +502,7 @@ export const MESSAGES: Record<number, Message[]> = {
       channel: 1,
       author: 10,
       author_name: "Mgr. Peter Novák",
-      content:
-        "Yes, grades back by Friday. Don't forget about Wednesday's math test!",
+      content: "Yes, grades back by Friday. Don't forget about Wednesday's math test!",
       attachment: null,
       reply_to: 4,
       created_at: "2026-05-26T11:30:00Z",
@@ -517,8 +516,7 @@ export const MESSAGES: Record<number, Message[]> = {
       channel: 2,
       author: 12,
       author_name: "Tomáš Horváth",
-      content:
-        "Can someone explain the discriminant? I keep getting confused when it's negative.",
+      content: "Can someone explain the discriminant? I keep getting confused when it's negative.",
       attachment: null,
       reply_to: null,
       created_at: "2026-05-26T09:45:00Z",

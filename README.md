@@ -1,4 +1,4 @@
-# EduKiller
+# EduPageKiller
 
 An open-source alternative to [EduPage](https://www.edupage.org/) for high-school classes, with bidirectional sync.
 

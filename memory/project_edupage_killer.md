@@ -4,7 +4,7 @@ description: Context about the edupage-killer project — what it is, tech stack
 type: project
 ---
 
-EduPage alternative school management app called "EduKiller".
+EduPage alternative school management app called "EduPageKiller".
 
 **Why:** Replace EduPage (https://www.edupage.org/) with an open, self-hosted system for high-school classes.
 

@@ -4,7 +4,9 @@ export default function DemoBanner() {
       <span className="inline-block w-2 h-2 rounded-full bg-amber-400" />
       <span className="font-semibold">Demo mode</span>
       <span className="text-amber-500">·</span>
-      <span className="text-amber-700">Viewing sample data — connect a real backend for live content</span>
+      <span className="text-amber-700">
+        Viewing sample data — connect a real backend for live content
+      </span>
     </div>
   );
 }
