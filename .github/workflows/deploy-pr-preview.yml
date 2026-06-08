@@ -1,8 +1,11 @@
-name: PR Preview
+name: Deploy PR Preview
 
 on:
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
+  workflow_run:
+    workflows: ["Build PR Preview"]
+    types: [completed]
+  pull_request_target:
+    types: [closed]
 
 permissions:
   contents: write
@@ -12,66 +15,48 @@ jobs:
   deploy-preview:
     name: Deploy PR Preview
     runs-on: ubuntu-latest
-    if: github.event.action != 'closed'
-
-    defaults:
-      run:
-        working-directory: frontend
+    if: github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success'
 
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
+      - name: Download preview artifact
+        uses: actions/download-artifact@v4
         with:
-          version: 9
+          name: pr-preview
+          github-token: ${{ github.token }}
+          run-id: ${{ github.event.workflow_run.id }}
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 26
-          cache: pnpm
-          cache-dependency-path: frontend/pnpm-lock.yaml
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Sync MSW service worker
-        run: |
-          mkdir -p public
-          cp node_modules/msw/lib/mockServiceWorker.js public/mockServiceWorker.js
-
-      - name: Build PR preview
-        run: pnpm run build
-        env:
-          VITE_DEMO_MODE: "true"
-          VITE_BASE_PATH: "/${{ github.event.repository.name }}/pr-${{ github.event.number }}/"
+      - name: Read PR number
+        id: pr
+        run: echo "number=$(cat pr-number.txt)" >> "$GITHUB_OUTPUT"
 
       - name: Deploy to gh-pages subdirectory
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: frontend/dist
           branch: gh-pages
-          target-folder: pr-${{ github.event.number }}
+          target-folder: pr-${{ steps.pr.outputs.number }}
           clean: true
 
       - name: Post preview URL comment
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-preview
+          number: ${{ steps.pr.outputs.number }}
           message: |
             ## Preview deployment
 
             | | |
             |---|---|
-            | **URL** | https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ github.event.number }}/ |
-            | **Commit** | ${{ github.event.pull_request.head.sha }} |
-            | **Updated** | ${{ github.event.pull_request.updated_at }} |
+            | **URL** | https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/pr-${{ steps.pr.outputs.number }}/ |
+            | **Commit** | ${{ github.event.workflow_run.head_sha }} |
+            | **Updated** | ${{ github.event.workflow_run.updated_at }} |
 
             > Demo mode — sample data, no backend required.
 
   cleanup-preview:
     name: Remove PR Preview
     runs-on: ubuntu-latest
-    if: github.event.action == 'closed'
+    if: github.event_name == 'pull_request_target' && github.event.action == 'closed'
 
     steps:
       - name: Check gh-pages branch exists
@@ -106,5 +91,6 @@ jobs:
         uses: marocchino/sticky-pull-request-comment@v2
         with:
           header: pr-preview
+          number: ${{ github.event.number }}
           message: |
             Preview removed (PR closed).
