@@ -1,0 +1,52 @@
+name: Build PR Preview
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  build:
+    name: Build PR Preview
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+        working-directory: frontend
+
+      - name: Sync MSW service worker
+        run: |
+          mkdir -p public
+          cp node_modules/msw/lib/mockServiceWorker.js public/mockServiceWorker.js
+        working-directory: frontend
+
+      - name: Build PR preview
+        run: pnpm run build
+        working-directory: frontend
+        env:
+          VITE_DEMO_MODE: "true"
+          VITE_BASE_PATH: "/${{ github.event.repository.name }}/pr-${{ github.event.number }}/"
+
+      - name: Save PR number
+        run: echo "${{ github.event.number }}" > pr-number.txt
+
+      - name: Upload preview artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr-preview
+          path: |
+            frontend/dist
+            pr-number.txt
+          retention-days: 1
